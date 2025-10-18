@@ -1,13 +1,32 @@
-// backend/utils/mailer.js
+// ============================================================
+// 📧 UTILIDAD DE ENVÍO DE CORREOS – CONGRESO UMG 2025
+// ============================================================
+
 const nodemailer = require("nodemailer");
 const QRCode = require("qrcode");
 const path = require("path");
 const fs = require("fs");
 
+// ============================================================
+// 🚀 CONFIGURACIÓN DEL TRANSPORTADOR SMTP (COMPATIBLE CON RAILWAY)
+// ============================================================
+
 const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true, // SSL/TLS
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+  tls: {
+    rejectUnauthorized: false, // evita bloqueo por certificados en Railway
+  },
 });
+
+// ============================================================
+// 📩 FUNCIÓN PRINCIPAL: ENVÍO DE CONFIRMACIÓN DE INSCRIPCIÓN
+// ============================================================
 
 async function sendConfirmationEmail(to, fullName, activity, qrLink) {
   try {
@@ -22,7 +41,7 @@ async function sendConfirmationEmail(to, fullName, activity, qrLink) {
     const logoPath = path.resolve(__dirname, "escudo-umg.png");
     const hasLogo = fs.existsSync(logoPath);
 
-    // 3️⃣ HTML principal del correo
+    // 3️⃣ Cuerpo HTML del correo
     const html = `
       <div style="font-family: Arial, sans-serif; color:#333; background:#f3f6fa; padding:25px; border-radius:12px;">
         <div style="text-align:center; margin-bottom:25px;">
@@ -85,7 +104,7 @@ async function sendConfirmationEmail(to, fullName, activity, qrLink) {
       </div>
     `;
 
-    // 4️⃣ Adjuntar QR + logo
+    // 4️⃣ Adjuntar QR y logo
     const attachments = [{ filename: "qr.png", path: qrPath, cid: "qrimage" }];
     if (hasLogo) {
       attachments.push({
@@ -97,19 +116,19 @@ async function sendConfirmationEmail(to, fullName, activity, qrLink) {
 
     // 5️⃣ Enviar correo
     await transporter.sendMail({
-      from: `"Congreso UMG" <${process.env.EMAIL_USER}>`,
+      from: process.env.MAIL_FROM || `"Congreso UMG" <${process.env.EMAIL_USER}>`,
       to,
       subject: `🎟️ Confirmación de inscripción - ${activity.title}`,
       html,
       attachments,
     });
 
-    // 6️⃣ Eliminar el QR temporal
+    // 6️⃣ Borrar el QR temporal
     fs.unlinkSync(qrPath);
 
-    console.log(`📩 Correo enviado a ${to} con enlace funcional ${qrLink}`);
+    console.log(`📩 Correo enviado correctamente a ${to}`);
   } catch (err) {
-    console.error("❌ Error al enviar correo:", err);
+    console.error("❌ Error al enviar correo:", err.message || err);
     throw err;
   }
 }
