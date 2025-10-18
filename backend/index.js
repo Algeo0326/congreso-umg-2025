@@ -9,7 +9,6 @@ const path = require("path");
 require("dotenv").config();
 
 const pool = require("./db"); // conexión a MySQL
-
 const app = express();
 
 // ============================================================
@@ -43,7 +42,7 @@ app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ limit: "10mb", extended: true }));
 
 // ============================================================
-// 🗂️ CONFIGURACIÓN DE ARCHIVOS ESTÁTICOS (Diplomas PDF)
+// 🗂️ ARCHIVOS ESTÁTICOS (Diplomas PDF)
 // ============================================================
 
 const storagePath = path.join(__dirname, "storage", "diplomas");
@@ -51,11 +50,10 @@ if (!fs.existsSync(storagePath)) {
   fs.mkdirSync(storagePath, { recursive: true });
   console.log("📁 Carpeta de diplomas creada:", storagePath);
 }
-
 app.use("/storage", express.static(path.join(__dirname, "storage")));
 
 // ============================================================
-// 🗺️ RUTAS PRINCIPALES (API REST)
+// 🗺️ RUTAS PRINCIPALES
 // ============================================================
 
 app.use("/api/activities", require("./routes/activities"));
@@ -67,17 +65,21 @@ app.use("/api/diplomas", require("./routes/diplomas"));
 app.use("/api/reports", require("./routes/reports"));
 
 // ============================================================
-// 🚀 SERVIDOR (Ajustado para Railway)
+// 🚀 SERVIDOR (AJUSTADO PARA RAILWAY)
 // ============================================================
 
-const PORT = process.env.PORT || 4000;
+// ⚠️ Railway asigna su propio puerto, por eso NO usamos un número fijo
+const PORT = process.env.PORT;
 
-// Escuchar en el puerto dinámico que asigna Railway
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`✅ Servidor iniciado correctamente en puerto ${PORT}`);
-  console.log(`🌐 Backend accesible públicamente (Railway): http://0.0.0.0:${PORT}`);
-  console.log(`📂 Diplomas almacenados en: ${storagePath}`);
-  console.log(`📧 EMAIL_USER: ${process.env.EMAIL_USER}`);
-  console.log(`📧 EMAIL_PASS: ${process.env.EMAIL_PASS ? "(oculta)" : "VACÍA"}`);
+// 🔹 Endpoint raíz para pruebas rápidas
+app.get("/", (req, res) => {
+  res.send("✅ Backend Congreso UMG 2025 está en línea 🚀");
 });
 
+// 🔹 Iniciar servidor
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`✅ Servidor iniciado en puerto ${PORT}`);
+  console.log(`🌐 Backend público (Railway) activo`);
+  console.log(`📂 Diplomas: ${storagePath}`);
+  console.log(`📧 EMAIL_USER: ${process.env.EMAIL_USER}`);
+});
