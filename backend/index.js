@@ -68,12 +68,13 @@ app.use("/api/reports", require("./routes/reports"));
 
 const PORT = process.env.PORT || 4000;
 
-// 🔹 Escuchar en todas las IPs (no solo localhost)
+// Mostrar credenciales (solo para debug)
 console.log("🔍 EMAIL_USER:", process.env.EMAIL_USER);
 console.log("🔍 EMAIL_PASS:", process.env.EMAIL_PASS ? "(oculta)" : "VACÍA");
 
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`✅ Servidor en ejecución: http://localhost:${PORT}`);
-  console.log(`🌐 Accesible en red local: http://10.238.141.178:${PORT}`);
-  console.log(`📂 Diplomas almacenados en: ${storagePath}`);
+// Escuchar en el puerto configurado
+app.listen(PORT, () => {
+  console.log(`✅ Servidor iniciado correctamente en el puerto ${PORT}`);
+  console.log(`🌐 URL pública (Railway o Render): http://0.0.0.0:${PORT}`);
 });
+
