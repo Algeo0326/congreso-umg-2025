@@ -1,0 +1,1276 @@
+/* ============================================================
+   🎨 PALETA Y BASE GLOBAL
+============================================================ */
+:root {
+  --blue-dark: #0a183a;
+  --blue-mid: #112b5f;
+  --blue-light: #1a3b80;
+  --blue: #3267B1;
+  --gold: #F7D232;
+  --orange: #F36F36;
+  --green: #5DC3AB;
+  --text: #f5f5f5;
+}
+
+/* ====== BASE ====== */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+  color: var(--text);
+  background: linear-gradient(135deg, #0a183a, #1a4b90, #6ec5ff);
+  background-attachment: fixed;
+}
+
+
+/* ============================================================
+   🧭 NAVBAR
+============================================================ */
+.navbar {
+  background: rgba(10, 24, 58, 0.5);
+  backdrop-filter: blur(8px);
+  color: white;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.navbar .brand {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: var(--gold);
+}
+
+.navbar .menu {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.navbar a {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.navbar a:hover {
+  color: var(--gold);
+}
+
+/* ==== DROPDOWN ==== */
+.dropdown {
+  position: relative;
+}
+
+.dropbtn {
+  background-color: var(--gold);
+  color: #000;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.dropbtn:hover {
+  background-color: #ffe46d;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(247, 210, 50, 0.3);
+}
+
+.dropdown-content {
+  position: absolute;
+  top: 110%;
+  left: 0;
+  background: rgba(20, 40, 80, 0.95);
+  border-radius: 8px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  min-width: 220px;
+  z-index: 20;
+  backdrop-filter: blur(8px);
+  animation: fadeInUp 0.25s ease-in-out;
+}
+
+.dropdown-content a {
+  display: block;
+  color: white;
+  padding: 0.8rem 1rem;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.dropdown-content a:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--gold);   
+}
+
+/* Marca */
+.navbar .brand {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: var(--gold);
+}
+
+/* Contenedor de links */
+.navbar nav {
+  display: flex; /* 🔹 fuerza los enlaces en una sola fila */
+  align-items: center;
+  gap: 1.5rem; /* espacio entre ellos */
+}
+
+/* Enlaces */
+.navbar nav a {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+  background: none !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+.navbar nav a:hover {
+  color: var(--gold);
+}
+
+
+/* ============================================================
+   🏠 HOME PAGE
+============================================================ */
+.homepage {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 3rem 1.5rem;
+  animation: fadeIn 1.2s ease-in-out;
+}
+
+.overlay {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.umg-logo {
+  width: 130px;
+  height: auto;
+  margin-bottom: 1rem;
+  animation: fadeIn 2s ease-in-out;
+}
+
+.home-content h1 {
+  font-size: 2.3rem;
+  color: var(--gold);
+  text-shadow: 0 0 12px rgba(247, 210, 50, 0.5);
+  margin-bottom: 0.8rem;
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 1rem;
+  max-width: 700px;
+  line-height: 1.6;
+}
+
+/* ============================================================
+   🧾 FORMULARIOS Y TARJETAS
+============================================================ */
+/* ============================================================
+   🧾 FORMULARIOS Y TARJETAS
+============================================================ */
+form, .card {
+  background: rgba(10, 30, 70, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  color: #fff;
+  padding: 2rem 2.5rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  max-width: 800px;
+  margin: 2rem auto;
+  animation: fadeInUp 1.2s ease-in-out;
+}
+
+
+label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: #ffffff;
+  font-size: 0.95rem;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  margin-bottom: 1.2rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 10px rgba(247, 210, 50, 0.4);
+}
+
+/* Botones */
+/* ==== SOLO BOTONES REALES Y BOTÓN DE INSCRIPCIÓN ==== */
+button,
+input[type="submit"],
+a.btn-register {
+  background-color: var(--gold);
+  color: #000 !important;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+}
+
+
+button:hover,
+input[type="submit"]:hover,
+a.btn-register:hover {
+  background-color: #ffe46d;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(247, 210, 50, 0.4);
+}
+
+.navbar nav a {
+  color: white;
+  text-decoration: none;
+  margin-left: 1.5rem;
+  font-weight: 500;
+  transition: color 0.3s ease;
+  background: none !important; /* fuerza quitar fondo */
+  border: none !important;
+  padding: 0 !important;
+}
+
+.navbar nav a:hover {
+  color: var(--gold);
+}
+
+
+/* ============================================================
+   📅 ACTIVIDADES (GRID)
+============================================================ */
+.activity-list {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  padding: 2rem;
+  max-width: 1100px;
+  margin: 3rem auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  animation: fadeInUp 1.2s ease-in-out;
+}
+
+.activity-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.activity-card {
+  background: linear-gradient(145deg, rgba(10, 30, 70, 0.95), rgba(0, 56, 112, 0.95));
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  padding: 1.8rem;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  animation: fadeIn 1.2s ease-in-out;
+}
+
+.activity-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 25px rgba(247, 210, 50, 0.3);
+  border-color: var(--gold);
+}
+
+.activity-card h3 {
+  font-size: 1.3rem;
+  color: var(--gold);
+  margin-bottom: 0.6rem;
+}
+
+.activity-card p {
+  margin: 0.4rem 0;
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* ============================================================
+   ⚙️ ANIMACIONES
+============================================================ */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   📜 FOOTER
+============================================================ */
+.footer {
+  text-align: center;
+  padding: 1.5rem 1rem;
+  font-size: 0.95rem;
+  backdrop-filter: blur(6px);
+  margin-top: 2rem;
+}
+
+.footer strong {
+  color: var(--gold);
+}
+
+/* === FORZAR TARJETAS HORIZONTALES EN HOME === */
+.activity-list .activity-grid {
+  display: flex !important;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: center;
+  align-items: stretch;
+}
+
+.activity-list .activity-card {
+  flex: 0 1 300px;         /* ancho base */
+  max-width: 340px;        /* límite superior */
+  width: 100%;             /* que respete el flex-basis */
+}
+
+/* ==== DROPDOWN NAVBAR ==== */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropbtn {
+  background-color: var(--gold);
+  color: #000;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.dropbtn:hover {
+  background-color: #ffe46d;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(247, 210, 50, 0.3);
+}
+
+/* Contenedor oculto por defecto */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background: rgba(20, 40, 80, 0.95);
+  min-width: 220px;
+  border-radius: 8px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  z-index: 15;
+  top: 110%; /* justo debajo del botón */
+  left: 0;
+  backdrop-filter: blur(8px);
+  animation: fadeInUp 0.25s ease-in-out;
+}
+
+/* ✅ Mostrar el menú cuando se agrega la clase .show */
+.dropdown-content.show {
+  display: block;
+}
+
+/* Enlaces del dropdown */
+.dropdown-content a {
+  display: block;
+  color: white;
+  padding: 0.8rem 1rem;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.dropdown-content a:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--gold);
+}
+
+/* 🚫 Eliminamos el hover que mostraba el menú automáticamente */
+/* .dropdown:hover .dropdown-content { display: block; } */
+
+/* ===== CENTRAR TÍTULOS Y TARJETAS ===== */
+.page-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;     /* Centra horizontalmente */
+  text-align: center;      /* Centra el texto de títulos y mensajes */
+}
+
+
+/* 🎨 Corrige visibilidad de los menús desplegables (select) */
+select,
+select option {
+  background-color: #ffffff;   /* Fondo blanco */
+  color: #000000;              /* Texto negro */
+  border: 1px solid var(--blue-mid);
+  border-radius: 6px;
+  padding: 6px;
+  font-size: 15px;
+}
+
+select:focus {
+  outline: none;
+  border-color: var(--gold);   /* Borde dorado al enfocarse */
+  box-shadow: 0 0 4px var(--gold);
+}
+
+/* Si tienes inputs con el mismo problema */
+input, textarea {
+  color: #000000;
+}
+
+/* ============================================================
+   🎓 MÓDULO DE DIPLOMAS
+============================================================ */
+.card {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(10px);
+  color: #fff;
+}
+
+.title {
+  text-align: center;
+  color: var(--gold);
+  margin-bottom: 1.5rem;
+}
+
+.input-section {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.input-section input {
+  padding: 0.5rem 0.8rem;
+  border-radius: 6px;
+  border: none;
+  outline: none;
+  width: 120px;
+}
+
+.input-section button {
+  background: var(--blue-light);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1rem;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.input-section button:hover {
+  background: var(--blue-mid);
+}
+
+.msg {
+  text-align: center;
+  color: var(--gold);
+  margin: 10px 0;
+}
+
+.divider {
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  margin: 20px 0;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.table th,
+.table td {
+  padding: 10px;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.table th {
+  color: var(--gold);
+}
+
+.table a {
+  color: var(--green);
+  text-decoration: none;
+}
+
+.table button {
+  background: var(--orange);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.table button:hover {
+  background: #d9541f;
+}
+.diploma-list {
+  margin-top: 2rem;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+
+.styled-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #fff;
+}
+
+.styled-table th, .styled-table td {
+  border: 1px solid rgba(255,255,255,0.2);
+  padding: 8px 12px;
+  text-align: center;
+}
+
+.btn-download {
+  color: #f7d232;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.btn-download:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+.diploma-search-form {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+.diploma-search-form input[type="email"] {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,.25);
+  background: rgba(255,255,255,.06);
+  color: #fff;
+  min-width: 260px;
+}
+.diploma-search-form button {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+/* ============================================================
+   🏆 GANADORES (Resultados de Competencias)
+============================================================ */
+.winners-section {
+  margin-top: 4rem;
+  text-align: center;
+}
+
+.year-filter {
+  margin: 1rem 0;
+  color: white;
+}
+
+.year-filter select {
+  margin-left: 0.5rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 8px;
+  border: none;
+}
+
+
+.winner-card {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 1rem;
+  box-shadow: 0 0 10px rgba(247, 210, 50, 0.2);
+  transition: transform 0.3s ease;
+}
+
+.winner-card:hover {
+  transform: scale(1.04);
+}
+
+.winner-photo {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.winner-card h3 {
+  margin: 0.6rem 0 0.3rem;
+  color: var(--gold);
+}
+
+.winner-card p {
+  margin: 0.2rem 0;
+}
+
+.winner-card .desc {
+  font-size: 0.9rem;
+  color: #ccc;
+}
+.cards-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 15px;
+  padding: 1rem;
+  width: 250px;
+  text-align: center;
+  color: white;
+}
+
+.card-img {
+  width: 100%;
+  height: 200px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.card-content span {
+  display: inline-block;
+  margin-top: 0.5rem;
+  background: var(--gold);
+  color: var(--blue-dark);
+  font-weight: 600;
+  padding: 0.3rem 0.6rem;
+  border-radius: 8px;
+}
+/* ============================================================
+   🪪 CARNET VERTICAL ESTILO ACREDITACIÓN - VERSIÓN PREMIUM
+============================================================ */
+
+.winner-card-vertical {
+  position: relative;
+  width: 280px;
+  height: 410px;
+  border-radius: 25px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45);
+  background-image: url("/src/assets/bg-card.svg");
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  animation: fadeUp 0.6s ease both;
+}
+
+.winner-card-vertical:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+}
+
+/* ✨ Fondos decorativos en capas */
+.winner-card-vertical::before,
+.winner-card-vertical::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.25;
+}
+
+.winner-card-vertical::before {
+  width: 420px;
+  height: 420px;
+  top: -180px;
+  right: -120px;
+  background: radial-gradient(circle, rgba(247, 210, 50, 0.4), transparent 70%);
+}
+
+.winner-card-vertical::after {
+  width: 380px;
+  height: 380px;
+  bottom: -160px;
+  left: -130px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.12), transparent 70%);
+}
+
+/* 🔹 Foto del ganador */
+.photo-frame {
+  z-index: 2;
+  margin-top: 2rem;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 4px solid var(--gold);
+  background: #fff;
+  overflow: hidden;
+  box-shadow: 0 0 18px rgba(247, 210, 50, 0.45);
+}
+
+.photo-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 🔸 Información del ganador */
+.winner-info-v {
+  z-index: 3;
+  padding: 1.2rem 1.4rem;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.winner-info-v h3 {
+  margin: 0.6rem 0 0.2rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--gold);
+}
+
+.winner-info-v h4 {
+  margin: 0;
+  font-size: 1rem;
+  color: #b8cff5;
+  font-weight: 600;
+}
+
+.winner-info-v p {
+  margin: 0.6rem 0 0.8rem;
+  font-size: 0.95rem;
+  opacity: 0.95;
+  line-height: 1.5;
+}
+
+/* 🏅 Medalla */
+.winner-medal {
+  display: inline-block;
+  border-radius: 8px;
+  padding: 0.35rem 0.9rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-transform: capitalize;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+  transition: transform 0.2s ease;
+}
+
+.winner-medal:hover {
+  transform: scale(1.05);
+}
+
+.winner-medal.gold {
+  background: linear-gradient(145deg, #ffea78, #f7d232);
+  color: #0a183a;
+}
+
+.winner-medal.silver {
+  background: linear-gradient(145deg, #e3e3e3, #b8b8b8);
+  color: #0a183a;
+}
+
+.winner-medal.bronze {
+  background: linear-gradient(145deg, #d98a4f, #cd7f32);
+  color: #fff;
+}
+
+/* ✨ Animaciones suaves */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 📱 Responsivo */
+@media (max-width: 768px) {
+  .winner-card-vertical {
+    width: 250px;
+    height: 380px;
+  }
+}
+
+/* ============================================================
+   🪝 GANCHO METÁLICO ESTILO CREDENCIAL (DETALLE REALISTA)
+============================================================ */
+.winner-card-vertical::before {
+  content: "";
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 65px;
+  height: 22px;
+  background: linear-gradient(145deg, #b8b8b8, #e3e3e3, #a0a0a0);
+  border-radius: 8px 8px 3px 3px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.35);
+  z-index: 5;
+}
+
+/* 🔘 Orificio del gancho (centro del clip) */
+.winner-card-vertical::after {
+  content: "";
+  position: absolute;
+  top: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, #d0d0d0 30%, #777 100%);
+  box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.25);
+  z-index: 6;
+}
+/* ============================================================
+   🛡️ SELLO HOLOGRÁFICO CON LOGO UMG (EFECTO PREMIUM)
+============================================================ */
+.winner-card-vertical::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("/src/assets/umg-logo.png");
+  background-repeat: no-repeat;
+  background-size: 200px;
+  background-position: center;
+  opacity: 0.08;
+  transform: rotate(-20deg);
+  pointer-events: none;
+  mix-blend-mode: screen;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  z-index: 0;
+}
+
+/* 💫 Efecto de brillo al pasar el mouse */
+.winner-card-vertical:hover::after {
+  opacity: 0.16;
+  transform: rotate(-20deg) scale(1.05);
+  filter: drop-shadow(0 0 6px rgba(247, 210, 50, 0.4));
+}
+/* ============================================================
+   🏆 GALERÍA HORIZONTAL DE GANADORES
+============================================================ */
+.winners-grid {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: flex-start;
+  align-items: stretch;
+  gap: 2rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  padding: 2rem 1rem;
+  width: 100%;
+  max-width: 100vw;
+}
+
+/* 🔹 Hace que el scroll horizontal sea invisible pero funcional */
+.winners-grid::-webkit-scrollbar {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+
+.winners-grid::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, #f7d232, #3267B1);
+  border-radius: 10px;
+}
+
+/* 🔹 Cada tarjeta mantiene su tamaño fijo */
+.winner-card-vertical {
+  flex: 0 0 290px;
+  min-width: 290px;
+  max-width: 290px;
+  margin-bottom: 1rem;
+  transition: transform 0.3s ease;
+}
+
+.winner-card-vertical:hover {
+  transform: scale(1.05);
+}
+/* ============================================================
+   🧭 FORZAR DISTRIBUCIÓN HORIZONTAL DE LAS TARJETAS DE GANADORES
+============================================================ */
+.winners-section {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  display: flex;
+  justify-content: center;
+}
+
+.winners-grid {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  justify-content: flex-start !important;
+  align-items: flex-start !important;
+  gap: 2rem !important;
+  width: max-content !important;
+  padding: 2rem 1rem !important;
+}
+
+.winner-card-vertical {
+  flex: 0 0 280px !important;
+  min-width: 280px !important;
+  max-width: 280px !important;
+}
+/* ============================================================
+   🏆 ESTILO LIMPIO Y CENTRADO PARA SECCIÓN DE GANADORES
+============================================================ */
+.winners-section {
+  background: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  margin: 3rem 0;
+  padding: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ✨ Título centrado */
+.winners-section h2 {
+  font-size: 2rem;
+  color: var(--gold);
+  text-align: center;
+  margin-bottom: 1.5rem;
+  text-shadow: 0 0 8px rgba(247, 210, 50, 0.4);
+}
+
+/* 💫 Galería de tarjetas */
+.winners-grid {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  justify-content: center !important;
+  align-items: stretch !important;
+  gap: 2rem !important;
+  width: max-content !important;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  padding: 1rem 2rem;
+  background: none !important;
+  border: none !important;
+}
+
+/* 🌈 Scroll horizontal minimalista */
+.winners-grid::-webkit-scrollbar {
+  height: 6px;
+  background: transparent;
+}
+
+.winners-grid::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, var(--gold), var(--blue));
+  border-radius: 10px;
+}
+
+/* 🪪 Tarjetas */
+.winner-card-vertical {
+  flex: 0 0 280px !important;
+  min-width: 280px !important;
+  max-width: 280px !important;
+  margin: 0 !important;
+  background: url("/src/assets/bg-card.svg") no-repeat center/cover;
+  border: none !important;
+}
+/* ============================================================
+   🎯 ACTIVIDADES EN VARIAS COLUMNAS (HORIZONTALES)
+============================================================ */
+
+.activity-list {
+  background: linear-gradient(135deg, rgba(10,30,70,0.9), rgba(50,103,177,0.85));
+  border-radius: 20px;
+  border: 1px solid rgba(247,210,50,0.15);
+  padding: 3rem 2rem;
+  max-width: 1400px;
+  width: 95%;
+  margin: 3rem auto;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+  backdrop-filter: blur(10px);
+}
+
+.activity-list h2 {
+  text-align: center;
+  color: var(--gold);
+  font-size: 1.8rem;
+  margin-bottom: 2rem;
+  text-shadow: 0 0 10px rgba(247,210,50,0.4);
+}
+
+/* 🔹 Distribución horizontal flexible */
+.activity-grid {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: center !important;
+  align-items: stretch !important;
+  gap: 2rem !important;
+  width: 100%;
+}
+
+/* 🔹 Tarjetas horizontales adaptables */
+.activity-card {
+  flex: 1 1 calc(25% - 2rem); /* 🔹 4 tarjetas por fila */
+  min-width: 260px;
+  max-width: 320px;
+  background: linear-gradient(160deg, rgba(255,255,255,0.08), rgba(0,56,112,0.45));
+  border: 2px solid rgba(247,210,50,0.15);
+  border-radius: 18px;
+  padding: 1.5rem;
+  text-align: center;
+  color: #fff;
+  transition: all 0.35s ease;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+  backdrop-filter: blur(8px);
+}
+
+.activity-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--gold);
+  box-shadow: 0 10px 30px rgba(247,210,50,0.35);
+}
+
+/* Títulos y detalles */
+.activity-card h3 {
+  color: var(--gold);
+  font-size: 1.25rem;
+  margin-bottom: 0.6rem;
+}
+
+.activity-card p {
+  margin: 0.25rem 0;
+  font-size: 0.95rem;
+  color: rgba(255,255,255,0.85);
+}
+
+/* 🔹 Responsive */
+@media (max-width: 1024px) {
+  .activity-card { flex: 1 1 calc(33.33% - 2rem); } /* 3 por fila */
+}
+
+@media (max-width: 768px) {
+  .activity-card { flex: 1 1 calc(50% - 1.5rem); } /* 2 por fila */
+}
+
+@media (max-width: 480px) {
+  .activity-card { flex: 1 1 100%; } /* 1 por fila */
+}
+
+
+/* ===========================================================
+🎨 ESTILOS DE INSCRIPCIÓN A ACTIVIDADES
+=========================================================== */
+
+.registration-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: stretch;
+  max-width: 950px;
+  margin: 2rem auto;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+  gap: 1.5rem;
+  overflow: hidden;
+}
+
+/* PANEL IZQUIERDO */
+.registration-left {
+  flex: 1 1 42%;
+  background: linear-gradient(135deg, #ffd700 0%, #0033a0 100%);
+  padding: 2rem 1.5rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: #000;
+}
+
+.registration-left h2 {
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.registration-left p {
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.registration-icon {
+  width: 120px;
+  height: 120px;
+  margin: 1.5rem auto 0;
+  opacity: 0.9;
+}
+
+/* PANEL DERECHO */
+.registration-right {
+  flex: 1 1 58%;
+  background: #0e1c3a;
+  color: #fff;
+  padding: 2rem;
+  border-radius: 15px;
+}
+
+/* FORMULARIO */
+.form-label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-weight: bold;
+  font-size: 1rem;
+  color: #fff;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.8rem;
+  font-size: 0.95rem;
+  border-radius: 8px;
+  border: 1px solid #aaa;
+  background: #fff;
+  color: #000;
+  margin-bottom: 1rem;
+}
+
+/* LISTA DE ACTIVIDADES */
+.activities-box {
+  border: 2px solid #ddd;
+  border-radius: 12px;
+  padding: 1rem;
+  background: #fff;
+  color: #000;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.activity-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+  margin-bottom: 0.8rem;
+  background: #fdfdfd;
+  border-radius: 10px;
+  padding: 0.8rem;
+  border: 1px solid #eee;
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+.activity-item.selected {
+  box-shadow: 0 0 12px 2px #ffd700;
+}
+
+.activity-item input {
+  transform: scale(1.3);
+  cursor: pointer;
+  margin-top: 6px;
+}
+
+.activity-item label {
+  cursor: pointer;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  color: #000;
+}
+
+/* BOTÓN */
+.submit-btn {
+  background: #ffd700;
+  color: #000;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  padding: 0.9rem;
+  width: 100%;
+  margin-top: 1.5rem;
+  font-size: 1.05rem;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+  transition: background 0.25s;
+}
+
+.submit-btn:hover {
+  background: #ffdd33;
+}
+
+/* MENSAJES */
+.msg-success {
+  color: lightgreen;
+  font-weight: bold;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.msg-error {
+  color: salmon;
+  font-weight: bold;
+  margin-top: 1rem;
+  text-align: center;
+}

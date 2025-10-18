@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500">
+  <defs>
+    <!-- Fondo degradado principal -->
+    <linearGradient id="bgGradient" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0a183a"></stop>
+      <stop offset="100%" stop-color="#1a3b80"></stop>
+    </linearGradient>
+
+    <!-- Degradado decorativo diagonal -->
+    <linearGradient id="accentGradient" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0%" stop-color="#00c3ff" stop-opacity="0.4"></stop>
+      <stop offset="100%" stop-color="#0047ab" stop-opacity="0"></stop>
+    </linearGradient>
+  </defs>
+
+  <!-- Fondo principal -->
+  <rect width="400" height="500" fill="url(#bgGradient)" rx="25" ry="25"></rect>
+
+  <!-- Capa diagonal decorativa -->
+  <path d="M0,320 Q200,400 400,250 L400,500 L0,500 Z" fill="url(#accentGradient)"></path>
+
+  <!-- Patrón de puntos superior derecho -->
+  <g fill="#00c3ff" fill-opacity="0.3">
+    <circle cx="330" cy="40" r="2"></circle>
+    <circle cx="345" cy="55" r="2"></circle>
+    <circle cx="360" cy="70" r="2"></circle>
+    <circle cx="375" cy="85" r="2"></circle>
+  </g>
+
+  <!-- Línea acento lateral -->
+  <rect x="20" y="0" width="5" height="150" fill="#F7D232" rx="3" ry="3"></rect>
+</svg>

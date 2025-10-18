@@ -1,0 +1,636 @@
+/* ============================================================
+   🎨 BASE GENERAL
+============================================================ */
+:root {
+  --blue-dark: #0d1b2a;
+  --blue-mid: #1b263b;
+  --blue-accent: #3267B1;
+  --gold: #F7D232;
+  --text-light: #ffffff;
+}
+
+.admin-body {
+  background: linear-gradient(135deg, var(--blue-dark), var(--blue-mid), #0a9396);
+  background-attachment: fixed;
+  min-height: 100vh;
+  font-family: 'Poppins', sans-serif;
+  color: var(--text-light);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+/* ============================================================
+   📦 CONTENEDOR PRINCIPAL
+============================================================ */
+.admin-page {
+  width: 100%;
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 2rem;
+  border-radius: 20px;
+  background: rgba(15, 25, 50, 0.95);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(12px);
+}
+
+/* ============================================================
+   🏷️ TÍTULOS
+============================================================ */
+.admin-title {
+  text-align: center;
+  color: var(--gold);
+  font-size: 1.7rem;
+  margin-bottom: 2rem;
+  font-weight: 700;
+}
+
+/* ============================================================
+   🧾 TARJETA INTERNA (LOGIN / FORMULARIOS)
+============================================================ */
+.admin-card {
+  background: rgba(30, 50, 90, 0.9);
+  border-radius: 16px;
+  padding: 1.8rem 2rem;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* ============================================================
+   🧠 FORMULARIOS (LOGIN / GESTIÓN)
+============================================================ */
+.admin-card form,
+.admin-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.admin-card label {
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+
+.admin-card input,
+.admin-card select {
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-light);
+  font-size: 1rem;
+  min-width: 200px;
+}
+
+.admin-card input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* ✅ Opciones del select visibles */
+.admin-card select option {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+/* ============================================================
+   🔘 BOTONES
+============================================================ */
+button,
+.btn {
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+/* 🟡 Botón dorado */
+.btn-gold,
+.admin-card button {
+  background-color: var(--gold);
+  color: #000;
+  padding: 0.7rem 1.2rem;
+}
+
+.btn-gold:hover,
+.admin-card button:hover {
+  background-color: #ffe45c;
+  transform: translateY(-2px);
+}
+
+/* 🔹 Botón azul */
+.btn-blue {
+  background-color: var(--blue-accent);
+  color: #fff;
+  padding: 0.7rem 1.2rem;
+}
+
+.btn-blue:hover {
+  background-color: #3d7be0;
+  transform: translateY(-2px);
+}
+
+/* ✨ Botón transparente elegante con texto blanco forzado */
+.btn-transparent {
+  background: transparent !important;
+  color: #ffffff !important; /* 🔥 fuerza blanco */
+  border: 2px solid rgba(255, 255, 255, 0.7) !important;
+  padding: 0.6rem 1.2rem;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(4px);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-transparent:hover {
+  background: rgba(247, 210, 50, 0.15) !important;
+  border-color: var(--gold) !important;
+  color: #ffffff !important; /* sigue blanco */
+  box-shadow: 0 0 10px rgba(247, 210, 50, 0.3);
+  transform: translateY(-2px);
+}
+
+
+/* Contenedor de botones del panel */
+.home-buttons {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+/* ============================================================
+   📋 TABLAS
+============================================================ */
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  margin-top: 1.5rem;
+  background: transparent;
+  color: var(--text-light);
+}
+
+.admin-table th {
+  padding: 0.8rem;
+  text-align: left;
+  font-weight: 700;
+  border-bottom: 2px solid var(--gold);
+}
+
+.admin-table td {
+  padding: 0.7rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.admin-table tr:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Botones de acción en tabla */
+.admin-table button {
+  background-color: var(--gold);
+  border: none;
+  border-radius: 6px;
+  padding: 0.4rem 0.6rem;
+  margin-right: 0.3rem;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.admin-table button:hover {
+  transform: translateY(-2px);
+  background-color: #ffe45c;
+}
+
+/* ============================================================
+   ⚠️ MENSAJES
+============================================================ */
+.msg-error {
+  color: #ff6b6b;
+  text-align: center;
+  margin-top: 1rem;
+  font-weight: 500;
+}
+
+.msg-success {
+  color: #5DC3AB;
+  text-align: center;
+  margin-top: 1rem;
+  font-weight: 500;
+}
+/* 🔙 Botón retroceso */
+.btn-back {
+  display: inline-block;
+  margin-bottom: 1.5rem;
+  padding: 0.6rem 1.2rem;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: 12px;
+  background: transparent;
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.btn-back:hover {
+  background-color: rgba(247, 210, 50, 0.2);
+  border-color: #f7d232;
+  transform: translateY(-2px);
+  color: #f7d232;
+}
+
+/* ============================================================
+   🔐 ESTILO EXCLUSIVO LOGIN ADMIN
+============================================================ */
+.login-page {
+  display: flex;
+  justify-content: center;
+  margin-top: 4rem;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 420px; /* 📏 más compacto */
+  margin: 0 auto;
+  padding: 2rem 2.5rem;
+  border-radius: 16px;
+  background: rgba(30, 50, 90, 0.95);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
+}
+
+/* 🎯 Formulario centrado verticalmente */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.3rem;
+  align-items: stretch;
+}
+
+/* Campos elegantes */
+.login-form label {
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+  color: var(--text-light);
+}
+
+.login-form input {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-light);
+  font-size: 1rem;
+}
+
+.login-form input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Botón centrado y elegante */
+.login-form button {
+  width: 100%;
+  background-color: var(--gold);
+  color: #000;
+  padding: 0.8rem;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.login-form button:hover {
+  background-color: #ffe45c;
+  transform: translateY(-2px);
+}
+
+/* Error message */
+.msg-error {
+  color: #ff6b6b;
+  text-align: center;
+  margin-top: 1rem;
+  font-weight: 500;
+}
+/* =========================================================
+   🎨 BOTONES ADMIN MODERNOS
+========================================================= */
+.btn-admin {
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: 0.25s;
+  display: inline-block;
+  border: none;
+}
+
+.btn-admin.blue {
+  background: #3267b1;
+  color: #fff;
+}
+
+.btn-admin.gold {
+  background: #f7d232;
+  color: #1a3b80;
+}
+
+.btn-admin.cyan {
+  background: #5dc3ab;
+  color: #fff;
+}
+
+.btn-admin.green {
+  background: #1a6f4b;
+  color: #fff;
+}
+
+.btn-admin:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+
+/* =========================================================
+   🎓 TABLA DE DIPLOMAS
+========================================================= */
+.table-container {
+  overflow-x: auto;
+}
+
+.diplomas-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #0b1330;
+  color: #f5f5f5;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+.diplomas-table th {
+  background: #1a3b80;
+  color: #f7d232;
+  padding: 12px;
+  text-align: center;
+  font-weight: 700;
+}
+
+.diplomas-table td {
+  padding: 10px;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.diplomas-table tr:hover {
+  background: rgba(50, 103, 177, 0.2);
+}
+
+.no-data {
+  padding: 20px;
+  text-align: center;
+  color: #aaa;
+}
+
+/* =========================================================
+   ✉️ MENSAJE Y BOTONES DE TABLA
+========================================================= */
+.message-box {
+  background: #eef4ff;
+  border: 1px solid #3267b1;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  text-align: center;
+  color: #1a3b80;
+}
+
+.loading-text {
+  text-align: center;
+  color: #f7d232;
+  font-weight: 600;
+}
+
+.btn-table {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  margin: 2px;
+  transition: 0.25s;
+}
+
+.btn-table.blue {
+  background: #3267b1;
+  color: #fff;
+}
+
+.btn-table.gold {
+  background: #f7d232;
+  color: #1a3b80;
+}
+
+.btn-table:hover {
+  transform: scale(1.08);
+}
+
+.center-btn {
+  text-align: center;
+  margin-top: 30px;
+}
+.back-btn-container {
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.back-btn-container .btn-admin {
+  background: #f7d232;
+  color: #1a3b80;
+  font-weight: 600;
+  padding: 10px 18px;
+  border-radius: 8px;
+  transition: 0.3s;
+}
+
+.back-btn-container .btn-admin:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 8px rgba(247, 210, 50, 0.6);
+}
+
+.diplomas-table th,
+.diplomas-table td {
+  padding: 12px 10px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.diplomas-table tr:hover {
+  background-color: #163369;
+  transition: background 0.3s ease;
+}
+
+.btn-table {
+  border: none;
+  border-radius: 6px;
+  padding: 5px 12px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-table.blue {
+  background: #3267b1;
+  color: #fff;
+}
+
+.btn-table.gold {
+  background: #f7d232;
+  color: #0a183a;
+}
+
+.btn-transparent {
+  background: transparent;
+  border: 1px solid #f7d232;
+  color: #f7d232;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-transparent:hover {
+  background: #f7d232;
+  color: #0a183a;
+}
+
+/* ============================================================
+   🧩 AJUSTE VISUAL PARA MENSAJES EN WINNERS ADMIN
+============================================================ */
+.admin-page select {
+  position: relative;
+  z-index: 10; /* Menor que el mensaje */
+}
+
+.admin-page p {
+  position: relative;
+  z-index: 5; /* Asegura que se vea sobre el fondo */
+}
+
+.admin-page .admin-title {
+  z-index: 20;
+  position: relative;
+}
+
+/* 💡 Para que el select no tape mensajes */
+.admin-page {
+  overflow: visible !important;
+}
+/* ============================================================
+   🎨 Dropdown personalizado con tooltip dorado (WinnersAdmin)
+============================================================ */
+.show-dropdown {
+  display: block !important;
+  animation: fadeIn 0.15s ease-in-out;
+}
+
+.dropdown-list li:hover {
+  background: rgba(247, 210, 50, 0.2);
+}
+
+.tooltip-float {
+  pointer-events: none;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* ============================================================
+   🎨 ESTILOS DE BOTONES ADMIN (INCLUYE GANADORES)
+============================================================ */
+
+.btn-admin {
+  display: inline-block;
+  padding: 0.8rem 1.5rem;
+  border-radius: 10px;
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+  border: none;
+}
+
+/* 💙 Azul */
+.btn-admin.blue {
+  background: linear-gradient(135deg, #3267b1, #1a3b80);
+}
+
+/* 🟡 Dorado */
+.btn-admin.gold {
+  background: linear-gradient(135deg, #f7d232, #f3b436);
+  color: #0a183a;
+}
+
+/* 🟢 Verde */
+.btn-admin.green {
+  background: linear-gradient(135deg, #5dc3ab, #3da188);
+}
+
+/* 🩵 Cian */
+.btn-admin.cyan {
+  background: linear-gradient(135deg, #50d0e0, #2da3c2);
+}
+
+/* 💜 Púrpura (Ganadores) */
+.btn-admin.purple {
+  background: linear-gradient(135deg, #9b59b6, #6d3fa8);
+  border: 2px solid #d4b1f6;
+}
+
+/* ✨ Hover */
+.btn-admin:hover {
+  transform: translateY(-3px);
+  filter: brightness(1.1);
+  box-shadow: 0 6px 15px rgba(255, 215, 0, 0.25);
+}
+/* ============================================================
+   🎯 BOTÓN "VOLVER AL PANEL" (ESTILO TRANSPARENTE)
+   ============================================================ */
+   .back-button-container {
+    margin-bottom: 1rem;
+  }
+  
+  .btn-back-panel {
+    display: inline-block;
+    background: transparent;
+    color: #ffffff; /* texto blanco */
+    border: 1.5px solid #facc15; /* borde dorado */
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: 0.3s;
+  }
+  
+  .btn-back-panel:hover {
+    border-color: #fde047; /* dorado más claro al pasar */
+    transform: translateY(-1px);
+  }
+  
