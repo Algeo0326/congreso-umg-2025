@@ -69,7 +69,7 @@ app.use("/api/reports", require("./routes/reports"));
 // ============================================================
 
 // ⚠️ Railway asigna su propio puerto, por eso NO usamos un número fijo
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 8080;
 
 // 🔹 Endpoint raíz para pruebas rápidas
 app.get("/", (req, res) => {
