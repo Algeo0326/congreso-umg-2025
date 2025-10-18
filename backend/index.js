@@ -67,15 +67,17 @@ app.use("/api/diplomas", require("./routes/diplomas"));
 app.use("/api/reports", require("./routes/reports"));
 
 // ============================================================
-// 🚀 SERVIDOR PRINCIPAL
+// 🚀 SERVIDOR (Ajustado para Railway)
 // ============================================================
 
 const PORT = process.env.PORT || 4000;
 
+// Escuchar en el puerto dinámico que asigna Railway
 app.listen(PORT, "0.0.0.0", () => {
-  console.log(`✅ Servidor en ejecución en puerto ${PORT}`);
+  console.log(`✅ Servidor iniciado correctamente en puerto ${PORT}`);
   console.log(`🌐 Backend accesible públicamente (Railway): http://0.0.0.0:${PORT}`);
   console.log(`📂 Diplomas almacenados en: ${storagePath}`);
-  console.log("📧 EMAIL_USER:", process.env.EMAIL_USER);
-  console.log("📧 EMAIL_PASS:", process.env.EMAIL_PASS ? "(oculta)" : "VACÍA");
+  console.log(`📧 EMAIL_USER: ${process.env.EMAIL_USER}`);
+  console.log(`📧 EMAIL_PASS: ${process.env.EMAIL_PASS ? "(oculta)" : "VACÍA"}`);
 });
+
