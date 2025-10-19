@@ -1,4 +1,4 @@
-este es el de diplomas.js, el no envie correos tambien, solo necesito que modifiques lo de enviar correos otra cosa no va, ya lo voy a probar solo te menciono que el area de diplomas.js tampoco envia correo a ver sino quiere actualizado el archivo te lo comparto // ============================================================
+ // ============================================================
 // 🎓 RUTAS - MÓDULO DE DIPLOMAS (Automático con PDF y correo)
 // ============================================================
 
