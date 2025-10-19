@@ -8,20 +8,37 @@ const pool = require("../db");
 const path = require("path");
 const fs = require("fs");
 const { generateDiploma } = require("../utils/diplomaGenerator");
-
-// 📬 Resend (email API sin SMTP)
 const { Resend } = require("resend");
+
 const resend = new Resend(process.env.RESEND_API_KEY);
 const MAIL_FROM = process.env.MAIL_FROM || "Congreso UMG <onboarding@resend.dev>";
 
 // ============================================================
-// 📩 FUNCIÓN: ENVIAR DIPLOMA POR CORREO (Resend)
+// 🕓 FUNCIÓN AUXILIAR: ESPERAR QUE EL ARCHIVO EXISTA
+// ============================================================
+async function esperarArchivo(filePath, intentos = 10, intervalo = 300) {
+  for (let i = 0; i < intentos; i++) {
+    if (fs.existsSync(filePath)) return true;
+    await new Promise((r) => setTimeout(r, intervalo));
+  }
+  return false;
+}
+
+// ============================================================
+// 📩 FUNCIÓN: ENVIAR DIPLOMA POR CORREO (Resend + verificación de archivo)
 // ============================================================
 async function enviarDiplomaPorCorreo(user, activity, filePath) {
   try {
-    // Leer PDF y convertir a base64 para adjuntarlo
+    // Esperar a que el PDF exista
+    const existe = await esperarArchivo(filePath);
+    if (!existe) {
+      throw new Error(`Archivo no encontrado tras generar: ${filePath}`);
+    }
+
+    // Leer PDF
     const pdfBase64 = fs.readFileSync(filePath).toString("base64");
 
+    // Enviar correo
     const { data, error } = await resend.emails.send({
       from: MAIL_FROM,
       to: user.email,
@@ -89,16 +106,14 @@ router.post("/generate/all", async (req, res) => {
         )
     `);
 
-    if (!rows.length) {
+    if (!rows.length)
       return res.json({ message: "No hay registros pendientes para generar diplomas." });
-    }
 
     const generados = [];
 
     for (const row of rows) {
       const [userRows] = await pool.query("SELECT * FROM users WHERE id = ?", [row.user_id]);
       const [activityRows] = await pool.query("SELECT * FROM activities WHERE id = ?", [row.activity_id]);
-
       if (!userRows.length || !activityRows.length) continue;
 
       const user = userRows[0];
@@ -130,11 +145,7 @@ router.post("/generate/all", async (req, res) => {
         [row.user_id, row.activity_id, filePath, enviado ? 1 : 0]
       );
 
-      generados.push({
-        user_id: row.user_id,
-        activity_id: row.activity_id,
-        enviado,
-      });
+      generados.push({ user_id: row.user_id, activity_id: row.activity_id, enviado });
     }
 
     res.json({
@@ -149,77 +160,12 @@ router.post("/generate/all", async (req, res) => {
 });
 
 // ============================================================
-// 📋 LISTAR DIPLOMAS POR CORREO (buscador frontend)
-// ============================================================
-router.get("/by-email", async (req, res) => {
-  try {
-    const email = (req.query.email || "").trim();
-    if (!email) return res.status(400).json({ message: "Falta el parámetro email." });
-
-    const [rows] = await pool.query(
-      `
-      SELECT 
-        d.id,
-        d.user_id,
-        u.full_name,
-        u.email,
-        d.activity_id,
-        a.title AS activity_title,
-        d.pdf_file,
-        d.generated_at,
-        d.emailed
-      FROM diplomas d
-      INNER JOIN users u ON u.id = d.user_id
-      INNER JOIN activities a ON a.id = d.activity_id
-      WHERE u.email = ?
-      ORDER BY d.generated_at DESC
-      `,
-      [email]
-    );
-
-    res.json(rows);
-  } catch (error) {
-    console.error("❌ Error al listar diplomas por email:", error);
-    res.status(500).json({ message: "Error interno al listar los diplomas por email." });
-  }
-});
-
-// ============================================================
-// 📋 Listar todos los diplomas (panel admin)
-// ============================================================
-router.get("/list-all", async (req, res) => {
-  try {
-    const [rows] = await pool.query(`
-      SELECT 
-        d.id,
-        d.user_id,
-        u.full_name,
-        u.email,
-        d.activity_id,
-        a.title AS activity_title,
-        d.pdf_file,
-        d.generated_at,
-        d.emailed
-      FROM diplomas d
-      INNER JOIN users u ON u.id = d.user_id
-      INNER JOIN activities a ON a.id = d.activity_id
-      ORDER BY d.generated_at DESC
-    `);
-  res.json(rows);
-  } catch (err) {
-    console.error("❌ Error listando diplomas:", err);
-    res.status(500).json({ message: "Error listando diplomas." });
-  }
-});
-
-// ============================================================
 // 📧 REENVIAR DIPLOMA POR CORREO (panel admin)
 // ============================================================
 router.post("/resend/:id", async (req, res) => {
   const diplomaId = req.params.id;
 
   try {
-    // Buscar diploma + usuario + actividad
     const [rows] = await pool.query(
       `SELECT 
          d.id,
@@ -234,25 +180,18 @@ router.post("/resend/:id", async (req, res) => {
       [diplomaId]
     );
 
-    if (!rows.length) {
-      return res.status(404).json({ message: "❌ Diploma no encontrado." });
-    }
+    if (!rows.length) return res.status(404).json({ message: "❌ Diploma no encontrado." });
 
     const diploma = rows[0];
 
-    // Reusar función de envío
     const enviado = await enviarDiplomaPorCorreo(
       { full_name: diploma.full_name, email: diploma.email },
       { title: diploma.activity_title },
       diploma.pdf_file
     );
 
-    // Actualizar columna emailed
     if (enviado) {
-      await pool.query(
-        "UPDATE diplomas SET emailed = 1, emailed_at = NOW() WHERE id = ?",
-        [diplomaId]
-      );
+      await pool.query("UPDATE diplomas SET emailed = 1, emailed_at = NOW() WHERE id = ?", [diplomaId]);
       console.log(`📨 Diploma reenviado a ${diploma.email}`);
     }
 
