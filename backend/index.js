@@ -19,7 +19,6 @@ const app = express();
 const allowedOrigins = [
   "http://localhost:3000", // desarrollo local
   "http://10.238.141.178:3000", // pruebas locales
-  "https://congreso-umg-2025-vercel.app", // dominio antiguo (por compatibilidad)
   "https://congreso-umg-2025-vitz.vercel.app", // dominio principal de producción
   "https://congreso-umg-2025-vitz-qg7m1mm3a.vercel.app", // dominio alterno (redeploy)
   "https://congreso-umg-20-git-b7974c-angel-algeo-aldana-cardonas-projects.vercel.app", // dominio temporal GitHub build
