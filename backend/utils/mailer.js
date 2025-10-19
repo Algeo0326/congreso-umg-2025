@@ -1,15 +1,18 @@
 // ============================================================
-// 📧 ENVÍO DE CORREOS – CONGRESO UMG 2025 (Resend API Oficial)
+// 📧 UTILIDAD DE ENVÍO DE CORREOS – CONGRESO UMG 2025 (Resend API)
 // ============================================================
 
 const { Resend } = require("resend");
 const QRCode = require("qrcode");
-const fs = require("fs");
 const path = require("path");
-const os = require("os");
+const fs = require("fs");
 
-// Inicializa cliente Resend
+// ============================================================
+// 🚀 CONFIGURACIÓN DEL CLIENTE RESEND
+// ============================================================
+
 const resend = new Resend(process.env.RESEND_API_KEY);
+const MAIL_FROM = process.env.MAIL_FROM || "Congreso UMG <onboarding@resend.dev>";
 
 // ============================================================
 // 📩 FUNCIÓN PRINCIPAL: ENVÍO DE CONFIRMACIÓN DE INSCRIPCIÓN
@@ -17,20 +20,18 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 async function sendConfirmationEmail(to, fullName, activity, qrLink) {
   try {
-    // 1️⃣ Generar QR temporal
-    const qrBuffer = await QRCode.toBuffer(qrLink, {
+    // 1️⃣ Generar el código QR temporal
+    const qrPath = path.join(__dirname, "qr-temp.png");
+    await QRCode.toFile(qrPath, qrLink, {
       color: { dark: "#000000", light: "#ffffff" },
       width: 250,
     });
 
-    // 2️⃣ Verificar si existe logo UMG
+    // 2️⃣ Verificar si existe el logo institucional
     const logoPath = path.resolve(__dirname, "escudo-umg.png");
     const hasLogo = fs.existsSync(logoPath);
-    const logoBase64 = hasLogo
-      ? fs.readFileSync(logoPath).toString("base64")
-      : null;
 
-    // 3️⃣ Plantilla HTML del correo
+    // 3️⃣ Cuerpo HTML del correo
     const html = `
       <div style="font-family: Arial, sans-serif; color:#333; background:#f3f6fa; padding:25px; border-radius:12px;">
         <div style="text-align:center; margin-bottom:25px;">
@@ -61,9 +62,6 @@ async function sendConfirmationEmail(to, fullName, activity, qrLink) {
           <div style="text-align:center;margin:15px 0;">
             <img src="cid:qrimage" style="width:220px;height:220px;" alt="QR"/>
           </div>
-          <p style="font-size:14px; color:#555; text-align:center;">
-            Escanea este código al ingresar al evento o haz clic en el siguiente botón para confirmar asistencia.
-          </p>
 
           <div style="text-align:center;margin-top:15px;">
             <a href="${qrLink}"
@@ -93,32 +91,32 @@ async function sendConfirmationEmail(to, fullName, activity, qrLink) {
       </div>
     `;
 
-    // 4️⃣ Enviar correo vía Resend API
+    // 4️⃣ Adjuntar QR y logo
     const attachments = [
-      {
-        filename: "qr.png",
-        content: qrBuffer.toString("base64"),
-        content_id: "qrimage",
-      },
+      { filename: "qr.png", path: qrPath, cid: "qrimage" },
     ];
 
     if (hasLogo) {
       attachments.push({
         filename: "escudo-umg.png",
-        content: logoBase64,
-        content_id: "umglogo",
+        path: logoPath,
+        cid: "umglogo",
       });
     }
 
-    await resend.emails.send({
-      from: process.env.MAIL_FROM || "Congreso UMG <onboarding@resend.dev>",
+    // 5️⃣ Enviar correo con la API Resend
+    const result = await resend.emails.send({
+      from: MAIL_FROM,
       to,
       subject: `🎟️ Confirmación de inscripción - ${activity.title}`,
       html,
       attachments,
     });
 
-    console.log(`📩 Correo enviado correctamente a ${to}`);
+    // 6️⃣ Eliminar QR temporal
+    fs.unlinkSync(qrPath);
+
+    console.log(`📩 Correo enviado correctamente a ${to}`, result.id);
   } catch (err) {
     console.error("❌ Error al enviar correo:", err.message || err);
     throw err;
