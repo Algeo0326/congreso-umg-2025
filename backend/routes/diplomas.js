@@ -1,32 +1,32 @@
 // ============================================================
-// 🎓 RUTAS - MÓDULO DE DIPLOMAS (Automático con PDF y correo)
+// 🎓 RUTAS - MÓDULO DE DIPLOMAS (Resend API compatible con Railway)
 // ============================================================
 
 const express = require("express");
 const router = express.Router();
 const pool = require("../db");
-const { generateDiploma } = require("../utils/diplomaGenerator");
-const nodemailer = require("nodemailer");
 const path = require("path");
+const fs = require("fs");
+const { generateDiploma } = require("../utils/diplomaGenerator");
+const { Resend } = require("resend");
 
 // ============================================================
-// 📬 CONFIGURAR TRANSPORTADOR DE CORREOS
+// 🚀 CONFIGURAR CLIENTE RESEND
 // ============================================================
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+const MAIL_FROM = process.env.MAIL_FROM || "Congreso UMG <onboarding@resend.dev>";
 
 // ============================================================
-// 📩 FUNCIÓN: ENVIAR DIPLOMA POR CORREO
+// 📩 FUNCIÓN: ENVIAR DIPLOMA POR CORREO (Resend)
 // ============================================================
+
 async function enviarDiplomaPorCorreo(user, activity, filePath) {
   try {
-    await transporter.sendMail({
-      from: `"Congreso UMG" <${process.env.EMAIL_USER}>`,
+    const pdfBase64 = fs.readFileSync(filePath).toString("base64");
+
+    const { data, error } = await resend.emails.send({
+      from: MAIL_FROM,
       to: user.email,
       subject: `🎓 Diploma de participación – ${activity.title}`,
       html: `
@@ -43,15 +43,21 @@ async function enviarDiplomaPorCorreo(user, activity, filePath) {
       attachments: [
         {
           filename: "Diploma.pdf",
-          path: filePath,
+          content: pdfBase64,
+          type: "application/pdf",
         },
       ],
     });
 
-    console.log(`📨 Diploma enviado a ${user.email}`);
+    if (error) {
+      console.error("❌ Error Resend (diploma):", error);
+      return false;
+    }
+
+    console.log(`📨 Diploma enviado correctamente a ${user.email}`, data?.id || "");
     return true;
   } catch (err) {
-    console.error("❌ Error enviando correo:", err);
+    console.error("❌ Error enviando correo de diploma:", err.message || err);
     return false;
   }
 }
@@ -59,6 +65,7 @@ async function enviarDiplomaPorCorreo(user, activity, filePath) {
 // ============================================================
 // 🧾 GENERAR Y ENVIAR DIPLOMAS DE TODOS LOS ASISTENTES
 // ============================================================
+
 router.post("/generate/all", async (req, res) => {
   try {
     const [rows] = await pool.query(`
@@ -128,77 +135,13 @@ router.post("/generate/all", async (req, res) => {
 });
 
 // ============================================================
-// 📋 LISTAR DIPLOMAS POR CORREO (para buscador del frontend)
+// 📧 REENVIAR DIPLOMA POR CORREO (Admin Panel)
 // ============================================================
-router.get("/by-email", async (req, res) => {
-  try {
-    const email = (req.query.email || "").trim();
-    if (!email) return res.status(400).json({ message: "Falta el parámetro email." });
 
-    const [rows] = await pool.query(
-      `
-      SELECT 
-        d.id,
-        d.user_id,
-        u.full_name,
-        u.email,
-        d.activity_id,
-        a.title AS activity_title,
-        d.pdf_file,
-        d.generated_at,
-        d.emailed
-      FROM diplomas d
-      INNER JOIN users u ON u.id = d.user_id
-      INNER JOIN activities a ON a.id = d.activity_id
-      WHERE u.email = ?
-      ORDER BY d.generated_at DESC
-      `,
-      [email]
-    );
-
-    res.json(rows);
-  } catch (error) {
-    console.error("❌ Error al listar diplomas por email:", error);
-    res.status(500).json({ message: "Error interno al listar los diplomas por email." });
-  }
-});
-
-// ============================================================
-// 📋 Listar todos los diplomas (para el panel admin)
-// ============================================================
-router.get("/list-all", async (req, res) => {
-  try {
-    const [rows] = await pool.query(`
-      SELECT 
-        d.id,
-        d.user_id,
-        u.full_name,
-        u.email,
-        d.activity_id,
-        a.title AS activity_title,
-        d.pdf_file,
-        d.generated_at,
-        d.emailed
-      FROM diplomas d
-      INNER JOIN users u ON u.id = d.user_id
-      INNER JOIN activities a ON a.id = d.activity_id
-      ORDER BY d.generated_at DESC
-    `);
-    res.json(rows);
-  } catch (err) {
-    console.error("❌ Error listando diplomas:", err);
-    res.status(500).json({ message: "Error listando diplomas." });
-  }
-});
-
-// ============================================================
-// 📧 REENVIAR DIPLOMA POR CORREO (para botón del panel admin)
-// ============================================================
 router.post("/resend/:id", async (req, res) => {
   const diplomaId = req.params.id;
 
   try {
-    // Buscar diploma + usuario + actividad
     const [rows] = await pool.query(
       `SELECT 
          d.id,
@@ -218,10 +161,10 @@ router.post("/resend/:id", async (req, res) => {
     }
 
     const diploma = rows[0];
+    const pdfBase64 = fs.readFileSync(diploma.pdf_file).toString("base64");
 
-    // 📧 Reenviar correo con el PDF adjunto
-    const mailSent = await transporter.sendMail({
-      from: `"Congreso UMG" <${process.env.EMAIL_USER}>`,
+    const { data, error } = await resend.emails.send({
+      from: MAIL_FROM,
       to: diploma.email,
       subject: `🎓 Reenvío de Diploma – ${diploma.activity_title}`,
       html: `
@@ -238,18 +181,20 @@ router.post("/resend/:id", async (req, res) => {
       attachments: [
         {
           filename: "Diploma.pdf",
-          path: diploma.pdf_file,
+          content: pdfBase64,
+          type: "application/pdf",
         },
       ],
     });
 
-    // Actualizar columna emailed
+    if (error) throw new Error(error.message);
+
     await pool.query(
       "UPDATE diplomas SET emailed = 1, emailed_at = NOW() WHERE id = ?",
       [diplomaId]
     );
 
-    console.log(`📨 Diploma reenviado a ${diploma.email}`);
+    console.log(`📨 Diploma reenviado a ${diploma.email}`, data?.id || "");
 
     res.json({
       success: true,
@@ -260,6 +205,5 @@ router.post("/resend/:id", async (req, res) => {
     res.status(500).json({ message: "Error interno reenviando diploma." });
   }
 });
-
 
 module.exports = router;
