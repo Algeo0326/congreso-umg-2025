@@ -19,6 +19,7 @@
     "pdf-lib": "^1.17.1",
     "pdfkit": "^0.17.2",
     "qrcode": "^1.5.4",
+    "resend": "^6.2.0",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
