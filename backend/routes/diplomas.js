@@ -194,5 +194,11 @@ router.post("/resend/:id", async (req, res) => {
     res.status(500).json({ message: "Error interno reenviando diploma." });
   }
 });
+// Alias temporal para compatibilidad con frontend antiguo
+router.post("/send-all", async (req, res) => {
+  // redirigir internamente a la ruta /generate/all
+  req.url = "/generate/all";
+  router.handle(req, res);
+});
 
 module.exports = router;
