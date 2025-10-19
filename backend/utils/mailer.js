@@ -1,26 +1,21 @@
 // ============================================================
-// 📧 UTILIDAD DE ENVÍO DE CORREOS – CONGRESO UMG 2025
+// 📧 UTILIDAD DE ENVÍO DE CORREOS – CONGRESO UMG 2025 (Resend SMTP)
 // ============================================================
 
 const nodemailer = require("nodemailer");
 const QRCode = require("qrcode");
 const path = require("path");
 const fs = require("fs");
+const os = require("os");
 
-// ============================================================
-// 🚀 CONFIGURACIÓN DEL TRANSPORTADOR SMTP (COMPATIBLE CON RAILWAY)
-// ============================================================
-
+// ✅ Transportador compatible con Railway (sin bloqueos)
 const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 465,
-  secure: true, // SSL/TLS
+  host: "smtp.resend.com",
+  port: 587,
+  secure: false, // STARTTLS
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-  tls: {
-    rejectUnauthorized: false, // evita bloqueo por certificados en Railway
+    user: "resend",
+    pass: process.env.RESEND_API_KEY,
   },
 });
 
@@ -30,8 +25,8 @@ const transporter = nodemailer.createTransport({
 
 async function sendConfirmationEmail(to, fullName, activity, qrLink) {
   try {
-    // 1️⃣ Generar el código QR temporal
-    const qrPath = path.join(__dirname, "qr-temp.png");
+    // 1️⃣ Generar el código QR temporal (usa /tmp en contenedores)
+    const qrPath = path.join(os.tmpdir(), "qr-temp.png");
     await QRCode.toFile(qrPath, qrLink, {
       color: { dark: "#000000", light: "#ffffff" },
       width: 250,
@@ -41,7 +36,7 @@ async function sendConfirmationEmail(to, fullName, activity, qrLink) {
     const logoPath = path.resolve(__dirname, "escudo-umg.png");
     const hasLogo = fs.existsSync(logoPath);
 
-    // 3️⃣ Cuerpo HTML del correo
+    // 3️⃣ Cuerpo HTML del correo (igual que el tuyo)
     const html = `
       <div style="font-family: Arial, sans-serif; color:#333; background:#f3f6fa; padding:25px; border-radius:12px;">
         <div style="text-align:center; margin-bottom:25px;">
@@ -72,9 +67,6 @@ async function sendConfirmationEmail(to, fullName, activity, qrLink) {
           <div style="text-align:center;margin:15px 0;">
             <img src="cid:qrimage" style="width:220px;height:220px;" alt="QR"/>
           </div>
-          <p style="font-size:14px; color:#555; text-align:center;">
-            Escanea este código al ingresar al evento o haz clic en el siguiente botón para confirmar asistencia.
-          </p>
 
           <div style="text-align:center;margin-top:15px;">
             <a href="${qrLink}"
@@ -114,9 +106,9 @@ async function sendConfirmationEmail(to, fullName, activity, qrLink) {
       });
     }
 
-    // 5️⃣ Enviar correo
+    // 5️⃣ Enviar correo (usa dominio de prueba si no defines MAIL_FROM)
     await transporter.sendMail({
-      from: process.env.MAIL_FROM || `"Congreso UMG" <${process.env.EMAIL_USER}>`,
+      from: process.env.MAIL_FROM || "Congreso UMG <onboarding@resend.dev>",
       to,
       subject: `🎟️ Confirmación de inscripción - ${activity.title}`,
       html,
@@ -124,11 +116,11 @@ async function sendConfirmationEmail(to, fullName, activity, qrLink) {
     });
 
     // 6️⃣ Borrar el QR temporal
-    fs.unlinkSync(qrPath);
+    try { fs.unlinkSync(qrPath); } catch (_) {}
 
     console.log(`📩 Correo enviado correctamente a ${to}`);
   } catch (err) {
-    console.error("❌ Error al enviar correo:", err.message || err);
+    console.error("❌ Error al enviar correo:", err);
     throw err;
   }
 }
