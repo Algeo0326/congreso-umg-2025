@@ -1,5 +1,5 @@
 // ============================================================
-// 🎓 RUTAS - MÓDULO DE DIPLOMAS (Resend API compatible con Railway)
+// 🎓 RUTAS - MÓDULO DE DIPLOMAS (PDF + correo vía Resend)
 // ============================================================
 
 const express = require("express");
@@ -8,21 +8,18 @@ const pool = require("../db");
 const path = require("path");
 const fs = require("fs");
 const { generateDiploma } = require("../utils/diplomaGenerator");
+
+// 📬 Resend (email API sin SMTP)
 const { Resend } = require("resend");
-
-// ============================================================
-// 🚀 CONFIGURAR CLIENTE RESEND
-// ============================================================
-
 const resend = new Resend(process.env.RESEND_API_KEY);
 const MAIL_FROM = process.env.MAIL_FROM || "Congreso UMG <onboarding@resend.dev>";
 
 // ============================================================
 // 📩 FUNCIÓN: ENVIAR DIPLOMA POR CORREO (Resend)
 // ============================================================
-
 async function enviarDiplomaPorCorreo(user, activity, filePath) {
   try {
+    // Leer PDF y convertir a base64 para adjuntarlo
     const pdfBase64 = fs.readFileSync(filePath).toString("base64");
 
     const { data, error } = await resend.emails.send({
@@ -30,14 +27,32 @@ async function enviarDiplomaPorCorreo(user, activity, filePath) {
       to: user.email,
       subject: `🎓 Diploma de participación – ${activity.title}`,
       html: `
-        <div style="font-family: Arial, sans-serif; background: #f9f9f9; padding: 20px; border-radius: 8px;">
-          <h2 style="color:#003366;">🎓 Congreso de Tecnología UMG</h2>
-          <p>Hola <b>${user.full_name}</b>,</p>
-          <p>Adjuntamos tu diploma de participación en la actividad:</p>
-          <p><b>${activity.title}</b></p>
-          <p>Puedes conservarlo o imprimirlo desde el archivo PDF adjunto.</p>
-          <br>
-          <p>Saludos cordiales,<br><b>Equipo del Congreso de Tecnología UMG</b></p>
+        <div style="font-family:Arial,sans-serif;background:#f4f6fa;padding:25px;">
+          <div style="text-align:center;">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/57/Logo_UMG.png"
+                 width="110" height="110"
+                 style="border-radius:50%;box-shadow:0 0 10px rgba(0,0,0,0.2);margin-bottom:10px;"
+                 alt="Escudo UMG">
+            <h1 style="color:#0a3a82;">Universidad Mariano Gálvez de Guatemala</h1>
+            <h2 style="margin-top:-10px;">Congreso de Tecnología UMG 2025</h2>
+          </div>
+
+          <div style="background:white;border-radius:12px;padding:25px;
+                      box-shadow:0 0 10px rgba(0,0,0,0.1);margin-top:20px;">
+            <h3 style="color:#0a3a82;">🎓 Diploma de Participación</h3>
+            <p>Hola <b>${user.full_name}</b>,</p>
+            <p>Adjuntamos tu diploma de participación en la actividad:</p>
+            <p style="text-align:center;"><b>${activity.title}</b></p>
+            <p style="text-align:center;">Puedes conservarlo o imprimirlo desde el archivo PDF adjunto.</p>
+            <br>
+            <p style="text-align:center;">Saludos cordiales,<br>
+              <b>Equipo del Congreso de Tecnología UMG</b></p>
+          </div>
+
+          <div style="text-align:center;font-size:12px;color:#777;margin-top:20px;">
+            <hr style="border:0;border-top:1px solid #ccc;width:60%;margin:15px auto;">
+            <p>© ${new Date().getFullYear()} UMG – Todos los derechos reservados.</p>
+          </div>
         </div>
       `,
       attachments: [
@@ -49,12 +64,8 @@ async function enviarDiplomaPorCorreo(user, activity, filePath) {
       ],
     });
 
-    if (error) {
-      console.error("❌ Error Resend (diploma):", error);
-      return false;
-    }
-
-    console.log(`📨 Diploma enviado correctamente a ${user.email}`, data?.id || "");
+    if (error) throw new Error(error.message);
+    console.log(`📨 Diploma enviado correctamente a ${user.email}`, data?.id || "(sin ID)");
     return true;
   } catch (err) {
     console.error("❌ Error enviando correo de diploma:", err.message || err);
@@ -65,7 +76,6 @@ async function enviarDiplomaPorCorreo(user, activity, filePath) {
 // ============================================================
 // 🧾 GENERAR Y ENVIAR DIPLOMAS DE TODOS LOS ASISTENTES
 // ============================================================
-
 router.post("/generate/all", async (req, res) => {
   try {
     const [rows] = await pool.query(`
@@ -75,14 +85,15 @@ router.post("/generate/all", async (req, res) => {
         AND NOT EXISTS (
           SELECT 1 FROM diplomas d
           WHERE d.user_id = r.user_id
-          AND d.activity_id = r.activity_id
+            AND d.activity_id = r.activity_id
         )
     `);
 
-    if (!rows.length)
+    if (!rows.length) {
       return res.json({ message: "No hay registros pendientes para generar diplomas." });
+    }
 
-    let generados = [];
+    const generados = [];
 
     for (const row of rows) {
       const [userRows] = await pool.query("SELECT * FROM users WHERE id = ?", [row.user_id]);
@@ -92,11 +103,14 @@ router.post("/generate/all", async (req, res) => {
 
       const user = userRows[0];
       const activity = activityRows[0];
-      const dateText = new Date(activity.day).toLocaleDateString("es-GT", {
-        day: "2-digit",
-        month: "long",
-        year: "numeric",
-      });
+
+      const dateText = activity.day
+        ? new Date(activity.day).toLocaleDateString("es-GT", {
+            day: "2-digit",
+            month: "long",
+            year: "numeric",
+          })
+        : "";
 
       // 🎓 Generar PDF
       const { filePath } = await generateDiploma({
@@ -107,10 +121,10 @@ router.post("/generate/all", async (req, res) => {
         activityId: row.activity_id,
       });
 
-      // 📧 Enviar correo
+      // 📧 Enviar por correo
       const enviado = await enviarDiplomaPorCorreo(user, activity, filePath);
 
-      // 💾 Guardar en tabla diplomas
+      // 💾 Registrar en tabla diplomas
       await pool.query(
         "INSERT INTO diplomas (user_id, activity_id, pdf_file, generated_at, emailed, emailed_at) VALUES (?, ?, ?, NOW(), ?, NOW())",
         [row.user_id, row.activity_id, filePath, enviado ? 1 : 0]
@@ -135,13 +149,77 @@ router.post("/generate/all", async (req, res) => {
 });
 
 // ============================================================
-// 📧 REENVIAR DIPLOMA POR CORREO (Admin Panel)
+// 📋 LISTAR DIPLOMAS POR CORREO (buscador frontend)
 // ============================================================
+router.get("/by-email", async (req, res) => {
+  try {
+    const email = (req.query.email || "").trim();
+    if (!email) return res.status(400).json({ message: "Falta el parámetro email." });
 
+    const [rows] = await pool.query(
+      `
+      SELECT 
+        d.id,
+        d.user_id,
+        u.full_name,
+        u.email,
+        d.activity_id,
+        a.title AS activity_title,
+        d.pdf_file,
+        d.generated_at,
+        d.emailed
+      FROM diplomas d
+      INNER JOIN users u ON u.id = d.user_id
+      INNER JOIN activities a ON a.id = d.activity_id
+      WHERE u.email = ?
+      ORDER BY d.generated_at DESC
+      `,
+      [email]
+    );
+
+    res.json(rows);
+  } catch (error) {
+    console.error("❌ Error al listar diplomas por email:", error);
+    res.status(500).json({ message: "Error interno al listar los diplomas por email." });
+  }
+});
+
+// ============================================================
+// 📋 Listar todos los diplomas (panel admin)
+// ============================================================
+router.get("/list-all", async (req, res) => {
+  try {
+    const [rows] = await pool.query(`
+      SELECT 
+        d.id,
+        d.user_id,
+        u.full_name,
+        u.email,
+        d.activity_id,
+        a.title AS activity_title,
+        d.pdf_file,
+        d.generated_at,
+        d.emailed
+      FROM diplomas d
+      INNER JOIN users u ON u.id = d.user_id
+      INNER JOIN activities a ON a.id = d.activity_id
+      ORDER BY d.generated_at DESC
+    `);
+  res.json(rows);
+  } catch (err) {
+    console.error("❌ Error listando diplomas:", err);
+    res.status(500).json({ message: "Error listando diplomas." });
+  }
+});
+
+// ============================================================
+// 📧 REENVIAR DIPLOMA POR CORREO (panel admin)
+// ============================================================
 router.post("/resend/:id", async (req, res) => {
   const diplomaId = req.params.id;
 
   try {
+    // Buscar diploma + usuario + actividad
     const [rows] = await pool.query(
       `SELECT 
          d.id,
@@ -161,44 +239,28 @@ router.post("/resend/:id", async (req, res) => {
     }
 
     const diploma = rows[0];
-    const pdfBase64 = fs.readFileSync(diploma.pdf_file).toString("base64");
 
-    const { data, error } = await resend.emails.send({
-      from: MAIL_FROM,
-      to: diploma.email,
-      subject: `🎓 Reenvío de Diploma – ${diploma.activity_title}`,
-      html: `
-        <div style="font-family: Arial, sans-serif; background: #f9f9f9; padding: 20px; border-radius: 8px;">
-          <h2 style="color:#003366;">🎓 Congreso de Tecnología UMG</h2>
-          <p>Hola <b>${diploma.full_name}</b>,</p>
-          <p>Te reenviamos tu diploma de participación en la actividad:</p>
-          <p><b>${diploma.activity_title}</b></p>
-          <p>Adjunto encontrarás tu diploma en formato PDF.</p>
-          <br>
-          <p>Saludos cordiales,<br><b>Equipo del Congreso de Tecnología UMG</b></p>
-        </div>
-      `,
-      attachments: [
-        {
-          filename: "Diploma.pdf",
-          content: pdfBase64,
-          type: "application/pdf",
-        },
-      ],
-    });
-
-    if (error) throw new Error(error.message);
-
-    await pool.query(
-      "UPDATE diplomas SET emailed = 1, emailed_at = NOW() WHERE id = ?",
-      [diplomaId]
+    // Reusar función de envío
+    const enviado = await enviarDiplomaPorCorreo(
+      { full_name: diploma.full_name, email: diploma.email },
+      { title: diploma.activity_title },
+      diploma.pdf_file
     );
 
-    console.log(`📨 Diploma reenviado a ${diploma.email}`, data?.id || "");
+    // Actualizar columna emailed
+    if (enviado) {
+      await pool.query(
+        "UPDATE diplomas SET emailed = 1, emailed_at = NOW() WHERE id = ?",
+        [diplomaId]
+      );
+      console.log(`📨 Diploma reenviado a ${diploma.email}`);
+    }
 
     res.json({
-      success: true,
-      message: `✅ Diploma reenviado correctamente a ${diploma.email}.`,
+      success: enviado,
+      message: enviado
+        ? `✅ Diploma reenviado correctamente a ${diploma.email}.`
+        : "❌ No se pudo reenviar el diploma.",
     });
   } catch (error) {
     console.error("❌ Error reenviando diploma:", error);
