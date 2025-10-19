@@ -35,8 +35,7 @@ export default function DiplomasAdmin() {
       if (type === "single") {
         res = await API.post(`/api/diplomas/resend/${diplomaId}`);
       } else {
-        res = await API.post("/api/diplomas/generate/all");
-
+        res = await API.post("/api/diplomas/send-all");
       }
 
       setMessage(res.data.message || "✅ Envío completado correctamente.");
