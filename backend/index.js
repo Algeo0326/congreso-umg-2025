@@ -15,17 +15,25 @@ const app = express();
 // 🧩 MIDDLEWARES
 // ============================================================
 
-// 🔹 CORS dinámico: permite el frontend tanto local como desplegado
+// 🔹 CORS dinámico: permite solicitudes desde local y desde dominios Vercel
 const allowedOrigins = [
   "http://localhost:3000", // desarrollo local
-  "http://10.238.141.178:3000", // pruebas locales en red
-  "https://congreso-umg-2025.vercel.app", // producción (Vercel)
+  "http://10.238.141.178:3000", // pruebas locales
+  "https://congreso-umg-2025-vercel.app", // dominio antiguo (por compatibilidad)
+  "https://congreso-umg-2025-vitz.vercel.app", // dominio principal de producción
+  "https://congreso-umg-2025-vitz-qg7m1mm3a.vercel.app", // dominio alterno (redeploy)
+  "https://congreso-umg-20-git-b7974c-angel-algeo-aldana-cardonas-projects.vercel.app", // dominio temporal GitHub build
 ];
 
+// Permitir cualquier dominio *.vercel.app para evitar errores en futuros redeploys
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (
+        !origin ||
+        allowedOrigins.includes(origin) ||
+        /\.vercel\.app$/.test(origin)
+      ) {
         callback(null, true);
       } else {
         console.warn("🚫 Bloqueado intento CORS desde:", origin);
@@ -68,10 +76,10 @@ app.use("/api/reports", require("./routes/reports"));
 // 🚀 SERVIDOR (AJUSTADO PARA RAILWAY)
 // ============================================================
 
-// ⚠️ Railway asigna su propio puerto, por eso NO usamos un número fijo
+// ⚠️ Railway asigna su propio puerto dinámico
 const PORT = process.env.PORT || 8080;
 
-// 🔹 Endpoint raíz para pruebas rápidas
+// 🔹 Endpoint raíz para verificación rápida
 app.get("/", (req, res) => {
   res.send("✅ Backend Congreso UMG 2025 está en línea 🚀");
 });
