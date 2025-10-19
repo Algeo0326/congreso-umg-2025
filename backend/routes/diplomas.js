@@ -11,13 +11,13 @@ const path = require("path");
 const { Resend } = require("resend");
 
 // ============================================================
-// 📬 CONFIGURACIÓN DEL CLIENTE DE RESEND
+// 📬 CONFIGURAR CLIENTE DE RESEND
 // ============================================================
 const resend = new Resend(process.env.RESEND_API_KEY);
 const MAIL_FROM = process.env.MAIL_FROM || "Congreso UMG <onboarding@resend.dev>";
 
 // ============================================================
-// 📩 FUNCIÓN: ENVIAR DIPLOMA POR CORREO (via RESEND)
+// 📩 FUNCIÓN: ENVIAR DIPLOMA POR CORREO (Resend API)
 // ============================================================
 async function enviarDiplomaPorCorreo(user, activity, filePath) {
   try {
@@ -84,9 +84,12 @@ router.post("/generate/all", async (req, res) => {
     let generados = [];
 
     for (const row of rows) {
-      const [[user]] = await pool.query("SELECT * FROM users WHERE id = ?", [row.user_id]);
-      const [[activity]] = await pool.query("SELECT * FROM activities WHERE id = ?", [row.activity_id]);
-      if (!user || !activity) continue;
+      const [userRows] = await pool.query("SELECT * FROM users WHERE id = ?", [row.user_id]);
+      const [activityRows] = await pool.query("SELECT * FROM activities WHERE id = ?", [row.activity_id]);
+      if (!userRows.length || !activityRows.length) continue;
+
+      const user = userRows[0];
+      const activity = activityRows[0];
 
       const dateText = new Date(activity.day).toLocaleDateString("es-GT", {
         day: "2-digit",
@@ -150,25 +153,27 @@ router.post("/resend/:id", async (req, res) => {
     }
 
     const diploma = rows[0];
-    const pdfBuffer = fs.readFileSync(diploma.pdf_file);
+    if (!fs.existsSync(diploma.pdf_file)) {
+      throw new Error(`Archivo no encontrado: ${diploma.pdf_file}`);
+    }
 
-    const html = `
-      <div style="font-family: Arial, sans-serif; background: #f9f9f9; padding: 20px; border-radius: 8px;">
-        <h2 style="color:#003366;">🎓 Congreso de Tecnología UMG</h2>
-        <p>Hola <b>${diploma.full_name}</b>,</p>
-        <p>Te reenviamos tu diploma de participación en la actividad:</p>
-        <p><b>${diploma.activity_title}</b></p>
-        <p>Adjunto encontrarás tu diploma en formato PDF.</p>
-        <br>
-        <p>Saludos cordiales,<br><b>Equipo del Congreso de Tecnología UMG</b></p>
-      </div>
-    `;
+    const pdfBuffer = fs.readFileSync(diploma.pdf_file);
 
     await resend.emails.send({
       from: MAIL_FROM,
       to: diploma.email,
       subject: `🎓 Reenvío de Diploma – ${diploma.activity_title}`,
-      html,
+      html: `
+        <div style="font-family: Arial, sans-serif; background: #f9f9f9; padding: 20px; border-radius: 8px;">
+          <h2 style="color:#003366;">🎓 Congreso de Tecnología UMG</h2>
+          <p>Hola <b>${diploma.full_name}</b>,</p>
+          <p>Te reenviamos tu diploma de participación en la actividad:</p>
+          <p><b>${diploma.activity_title}</b></p>
+          <p>Adjunto encontrarás tu diploma en formato PDF.</p>
+          <br>
+          <p>Saludos cordiales,<br><b>Equipo del Congreso de Tecnología UMG</b></p>
+        </div>
+      `,
       attachments: [
         {
           filename: "Diploma.pdf",
